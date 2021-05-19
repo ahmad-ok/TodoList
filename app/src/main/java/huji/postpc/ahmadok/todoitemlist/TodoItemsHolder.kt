@@ -25,4 +25,7 @@ interface TodoItemsHolder {
 
     /** get number of items in holder*/
     fun getSize() : Int
+
+    /** get list of items in holder*/
+    fun getItems() : List<TodoItem>
 }

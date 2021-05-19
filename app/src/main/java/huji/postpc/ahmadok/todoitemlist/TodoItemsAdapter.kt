@@ -32,12 +32,12 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemViewHolder>() {
                     item.setDone()
                     // add strikethrough to text
                     strikeThroughText(holder)
-
                 } else {
                     item.setInProgress()
                     // remove strikethrough
                     unstrikeThroughText(holder)
                 }
+
             }
         }
     }
