@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TodoItemList</string>
+    <string name="todo_row_text">Todo Text Here</string>
+</resources>
