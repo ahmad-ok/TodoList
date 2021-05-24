@@ -4,17 +4,12 @@ import android.graphics.Paint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 
 
-class TodoItemsAdapter : RecyclerView.Adapter<TodoItemViewHolder>() {
-
-    var todoItems : TodoItemsHolder? = null
-
-    fun setItems(todoItems : TodoItemsHolder){
-        this.todoItems = todoItems
-    }
-
+class TodoItemsAdapter(
+    val itemHolder: TodoItemsHolder
+) : ListAdapter<TodoItem, TodoItemViewHolder>(TodoDiffCallBack()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoItemViewHolder {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(R.layout.row_todo_item, parent, false)
@@ -22,39 +17,27 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TodoItemViewHolder, position: Int) {
-        val item = todoItems?.getItem(position)
-        if (item != null) {
-            holder.todoItemText.setText(item.getDesc())
-            holder.todoItemCheckBox.setChecked(item.isDone())
+        val item = getItem(position)
 
-            holder.todoItemCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isChecked) {
-                    item.setDone()
-                    // add strikethrough to text
-                    strikeThroughText(holder)
-                } else {
-                    item.setInProgress()
-                    // remove strikethrough
-                    unstrikeThroughText(holder)
-                }
+        holder.todoItemText.setText(item.description)
+        holder.todoItemCheckBox.isChecked = item.isDone
+        holder.todoItemCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                val new_idx = itemHolder.markItemDone(item)
+                Log.i("Adapter", "onBindViewHolder: check new index is $new_idx")
+                holder.todoItemText.paintFlags =
+                    (holder.todoItemText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
 
+                notifyItemMoved(holder.adapterPosition, new_idx)
+            } else {
+                val new_idx = itemHolder.markItemInProgress(item)
+                Log.i("Adapter", "onBindViewHolder: uncheck new index is $new_idx")
+                holder.todoItemText.paintFlags =
+                    (holder.todoItemText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv())
+                notifyItemMoved(holder.adapterPosition, new_idx)
             }
         }
+
     }
 
-    private fun unstrikeThroughText(holder: TodoItemViewHolder) {
-        holder.todoItemText.setPaintFlags(holder.todoItemText.getPaintFlags()
-                    and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-        )
-    }
-
-    private fun strikeThroughText(holder: TodoItemViewHolder) {
-        holder.todoItemText.setPaintFlags(holder.todoItemText.getPaintFlags()
-                    or Paint.STRIKE_THRU_TEXT_FLAG)
-    }
-
-    override fun getItemCount(): Int {
-        val todoItems1 = todoItems
-        return if (todoItems1 != null) todoItems1.getSize() else 0
-    }
 }

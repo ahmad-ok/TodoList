@@ -1,10 +1,8 @@
 package huji.postpc.ahmadok.todoitemlist
 
-import android.util.Log
-
 
 class TodoItemsHolderImpl : TodoItemsHolder {
-    override val currentItems: MutableList<TodoItem>  = arrayListOf()
+    override val currentItems: MutableList<TodoItem> = ArrayList()
 
 
     override fun addNewInProgressItem(description: String) {
@@ -12,14 +10,27 @@ class TodoItemsHolderImpl : TodoItemsHolder {
         currentItems.add(0, item)
     }
 
-    override fun markItemDone(item: TodoItem) {
-        item.setDone()
-        sort()
+    override fun markItemDone(item: TodoItem): Int {
+        item.isDone = true
+        //move item to end
+        currentItems.remove(item)
+        currentItems.add(item)
+
+        return currentItems.size - 1
     }
 
-    override fun markItemInProgress(item: TodoItem) {
-        item.setInProgress()
-        sort()
+    override fun markItemInProgress(item: TodoItem): Int {
+        var addIdx = 0
+        for (i in currentItems.indices) {
+            addIdx = i
+            if (currentItems[i].creationTime < item.creationTime || currentItems[i].isDone) {
+                break
+            }
+        }
+        item.isDone = false
+        currentItems.remove(item)
+        currentItems.add(addIdx, item)
+        return addIdx
     }
 
     override fun deleteItem(item: TodoItem) {
@@ -38,7 +49,13 @@ class TodoItemsHolderImpl : TodoItemsHolder {
         return currentItems
     }
 
-    private fun sort(){
-        currentItems.sortWith(compareBy<TodoItem>{!it.isDone()}.thenBy {-it.getCreationTime()})
+
+    override fun clear() {
+        currentItems.clear()
     }
+
+    override fun addAll(holder: TodoItemsHolder) {
+        currentItems.addAll(holder.getItems())
+    }
+
 }

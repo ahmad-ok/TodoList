@@ -2,40 +2,27 @@ package huji.postpc.ahmadok.todoitemlist
 
 import java.io.Serializable
 
-class TodoItem(description : String) : Serializable {
+data class TodoItem(
+    var description: String = "",
+    var isDone: Boolean = false,
+    var creationTime: Long = System.currentTimeMillis()
+) : Serializable
+/*
 
-    private val _description : String = description
-    private var _isDone = false
-    private var _creationTime = 0
+class TodoItem(var description: String, var isDone: Boolean = false, var creationTime: Int = 0) : Serializable {
+
+//    var isDone = false
+//    var creationTime = 0
 
     companion object{
         var time: Int = 0
     }
 
     init {
-        _creationTime = time
+        creationTime = time
         time++
 
     }
 
-    fun setDone(){
-        _isDone = true
-    }
 
-    fun setInProgress(){
-        _isDone = false
-    }
-
-    fun isDone() : Boolean{
-        return _isDone
-    }
-
-    fun getDesc() : String{
-        return _description
-    }
-
-    fun getCreationTime() : Int{
-        return _creationTime
-    }
-
-}
+}*/

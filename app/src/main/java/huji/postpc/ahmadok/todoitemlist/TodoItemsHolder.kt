@@ -12,10 +12,10 @@ interface TodoItemsHolder {
     fun addNewInProgressItem(description: String)
 
     /** mark the @param item as DONE  */
-    fun markItemDone(item: TodoItem)
+    fun markItemDone(item: TodoItem) : Int
 
     /** mark the @param item as IN-PROGRESS  */
-    fun markItemInProgress(item: TodoItem)
+    fun markItemInProgress(item: TodoItem) : Int
 
     /** delete the @param item  */
     fun deleteItem(item: TodoItem)
@@ -28,4 +28,10 @@ interface TodoItemsHolder {
 
     /** get list of items in holder*/
     fun getItems() : List<TodoItem>
+
+    /** clear items in holder*/
+    fun clear()
+
+    /** add all items in given TodoItemsHolder to current*/
+    fun addAll(holder: TodoItemsHolder)
 }
