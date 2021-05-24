@@ -9,9 +9,11 @@
         android:id="@+id/todoItemText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+
         android:layout_marginStart="10dp"
         android:hint="@string/todo_row_text"
         android:textColor="@color/black"
@@ -25,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
         android:layout_marginEnd="10dp"
-        android:backgroundTint="@color/white"
+        android:buttonTint="@color/white"
 
         />
 
