@@ -3,12 +3,12 @@ I ensure that all of my work reflects my own abilities and not those of someone 
 
 ## Answer
 I would add a hold to edit functionality in order to edit a todoitem
-- 1- it should be relatively intuitive and easy to figure out, since many apps
+1. it should be relatively intuitive and easy to figure out, since many apps
    use the hold to edit mechanism
-- 2- it wont be hard to implement, all we need to do is deifne an action when we 
+2. it wont be hard to implement, all we need to do is deifne an action when we 
    hold a row_todo_item, which should pop up a keyboard to insert new text or
    alternatively open up a new screen.
-- 3- this is pretty consistent with many apps, as they implement holding in order
+3. this is pretty consistent with many apps, as they implement holding in order
    to manage or edit the specific item (whatsapp messages, gmail .. etc)
 # TodoItems List
 
