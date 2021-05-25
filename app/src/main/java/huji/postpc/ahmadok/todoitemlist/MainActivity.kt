@@ -14,11 +14,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class MainActivity : AppCompatActivity() {
 
     var items: MutableList<TodoItem> = ArrayList()
+    var holder: TodoItemsHolder = TodoItemsHolderImpl()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val holder: TodoItemsHolder = TodoItemsHolderImpl()
 
         val adapter = TodoItemsAdapter(holder)
         val todoItemRecycler: RecyclerView = findViewById(R.id.recyclerTodoItemsList)

@@ -1,5 +1,6 @@
 package huji.postpc.ahmadok.todoitemlist
 
+import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 
 
 class TodoItemsAdapter(
-    val itemHolder: TodoItemsHolder
+    private val itemHolder: TodoItemsHolder
 ) : ListAdapter<TodoItem, TodoItemViewHolder>(TodoDiffCallBack()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoItemViewHolder {
         val context = parent.context
@@ -27,13 +28,15 @@ class TodoItemsAdapter(
                 Log.i("Adapter", "onBindViewHolder: check new index is $new_idx")
                 holder.todoItemText.paintFlags =
                     (holder.todoItemText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
-
+                holder.todoItemText.setTextColor(Color.GRAY)
                 notifyItemMoved(holder.adapterPosition, new_idx)
             } else {
                 val new_idx = itemHolder.markItemInProgress(item)
                 Log.i("Adapter", "onBindViewHolder: uncheck new index is $new_idx")
                 holder.todoItemText.paintFlags =
                     (holder.todoItemText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv())
+                holder.todoItemText.setTextColor(Color.BLACK)
+
                 notifyItemMoved(holder.adapterPosition, new_idx)
             }
         }
