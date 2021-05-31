@@ -33,5 +33,5 @@ interface TodoItemsHolder {
     fun clear()
 
     /** add all items in given TodoItemsHolder to current*/
-    fun addAll(holder: TodoItemsHolder)
+    fun addAll(holder: List<TodoItem>)
 }

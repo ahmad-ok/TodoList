@@ -1,12 +1,20 @@
 package huji.postpc.ahmadok.todoitemlist
 
+import android.content.Context
+import android.content.SharedPreferences
+import com.google.gson.Gson
+import java.util.*
+import kotlin.collections.ArrayList
 
-class TodoItemsHolderImpl : TodoItemsHolder {
+
+class TodoItemsHolderImpl(val context : Context) : TodoItemsHolder {
     override val currentItems: MutableList<TodoItem> = ArrayList()
+    private val sp: SharedPreferences = context.getSharedPreferences("local_db_items", Context.MODE_PRIVATE)
 
 
     override fun addNewInProgressItem(description: String) {
-        val item = TodoItem(description)
+        val id : String = UUID.randomUUID().toString()
+        val item = TodoItem(id, description)
         currentItems.add(0, item)
     }
 
@@ -15,6 +23,8 @@ class TodoItemsHolderImpl : TodoItemsHolder {
         //move item to end
         currentItems.remove(item)
         currentItems.add(item)
+
+        putInSharedPref()
 
         return currentItems.size - 1
     }
@@ -30,11 +40,13 @@ class TodoItemsHolderImpl : TodoItemsHolder {
         item.isDone = false
         currentItems.remove(item)
         currentItems.add(addIdx, item)
+        putInSharedPref()
         return addIdx
     }
 
     override fun deleteItem(item: TodoItem) {
         currentItems.remove(item)
+        putInSharedPref()
     }
 
     override fun getItem(position: Int): TodoItem {
@@ -54,8 +66,15 @@ class TodoItemsHolderImpl : TodoItemsHolder {
         currentItems.clear()
     }
 
-    override fun addAll(holder: TodoItemsHolder) {
-        currentItems.addAll(holder.getItems())
+    override fun addAll(holder: List<TodoItem>) {
+        currentItems.addAll(holder)
+    }
+
+    private fun putInSharedPref(){
+        val editor = sp.edit()
+        val gson = Gson()
+        editor.putString("holder", gson.toJson(currentItems))
+        editor.apply()
     }
 
 }
