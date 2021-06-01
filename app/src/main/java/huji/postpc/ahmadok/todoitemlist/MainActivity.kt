@@ -1,9 +1,10 @@
 package huji.postpc.ahmadok.todoitemlist
 
-import android.content.SharedPreferences
+import android.content.*
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
@@ -16,15 +17,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-
 class MainActivity : AppCompatActivity() {
 
     var holder: TodoItemsHolder? = null
+    val adapter: TodoItemsAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         if (holder == null) {
             holder = TodoItemApplication.getInstance()?.getDataBase()
         }
@@ -41,9 +41,31 @@ class MainActivity : AppCompatActivity() {
         if (prev != null) {
             holder?.clear()
             holder?.addAll(prev)
+
         }
+//        holder?.currentItems?.sortedWith { item1: TodoItem, item2: TodoItem ->
+//            0
+//        }
+        holder?.currentItems?.sortedWith { todoItem: TodoItem, todoItem1: TodoItem ->
+            val doneness = todoItem.isDone.compareTo(todoItem1.isDone)
+            if (doneness == 0) {
+                return@sortedWith todoItem.creationTime.compareTo(todoItem1.creationTime)
+            } else {
+                return@sortedWith doneness
+            }
+        }
+
         adapter.submitList(holder?.currentItems)
         adapter.notifyDataSetChanged()
+
+        val broadCastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(contxt: Context?, intent: Intent?) {
+                if (intent?.action == "data_modified") {
+                    adapter.submitList(holder?.currentItems)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
 
         val addTodoButton: FloatingActionButton = findViewById(R.id.buttonCreateTodoItem)
         val addTaskText: EditText = findViewById(R.id.editTextInsertTask)
@@ -59,8 +81,19 @@ class MainActivity : AppCompatActivity() {
                 addTaskText.setText("")
             }
         }
+
+        addTaskText.setOnEditorActionListener { _, actionId, _ ->
+            var handled = false
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                handled = true
+                addTodoButton.callOnClick()
+            }
+
+            handled
+        }
         Toast.makeText(this, "Swipe left or right to delete!", Toast.LENGTH_LONG).show()
         setDeleteOnSwipe(holder, adapter, todoItemRecycler)
+        registerReceiver(broadCastReceiver, IntentFilter("data_modified"))
 
     }
 
@@ -92,4 +125,6 @@ class MainActivity : AppCompatActivity() {
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper.attachToRecyclerView(todoItemRecycler)
     }
+
+
 }

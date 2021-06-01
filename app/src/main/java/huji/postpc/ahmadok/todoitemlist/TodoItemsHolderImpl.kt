@@ -7,22 +7,39 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class TodoItemsHolderImpl(val context : Context) : TodoItemsHolder {
+class TodoItemsHolderImpl(context: Context) : TodoItemsHolder {
     override val currentItems: MutableList<TodoItem> = ArrayList()
-    private val sp: SharedPreferences = context.getSharedPreferences("local_db_items", Context.MODE_PRIVATE)
+    private val sp: SharedPreferences =
+        context.getSharedPreferences("local_db_items", Context.MODE_PRIVATE)
 
+    override fun editTodoItem(id: String, description: String, modifiedDate: Calendar) {
+
+        for (todoItem in currentItems) {
+            if (todoItem.id == id) {
+                todoItem.description = description
+                todoItem.modifiedDate = modifiedDate
+            }
+        }
+    }
 
     override fun addNewInProgressItem(description: String) {
-        val id : String = UUID.randomUUID().toString()
+        val id: String = UUID.randomUUID().toString()
         val item = TodoItem(id, description)
         currentItems.add(0, item)
+        putInSharedPref()
     }
 
     override fun markItemDone(item: TodoItem): Int {
         item.isDone = true
         //move item to end
-        currentItems.remove(item)
-        currentItems.add(item)
+        currentItems.sortWith { todoItem: TodoItem, todoItem1: TodoItem ->
+            val doneness = todoItem.isDone.compareTo(todoItem1.isDone)
+            if (doneness == 0) {
+                return@sortWith todoItem.creationTime.compareTo(todoItem1.creationTime)
+            } else {
+                return@sortWith doneness
+            }
+        }
 
         putInSharedPref()
 
@@ -38,8 +55,15 @@ class TodoItemsHolderImpl(val context : Context) : TodoItemsHolder {
             }
         }
         item.isDone = false
-        currentItems.remove(item)
-        currentItems.add(addIdx, item)
+        currentItems.sortWith { todoItem: TodoItem, todoItem1: TodoItem ->
+            val doneness = todoItem.isDone.compareTo(todoItem1.isDone)
+            if (doneness == 0) {
+                return@sortWith todoItem.creationTime.compareTo(todoItem1.creationTime)
+            } else {
+                return@sortWith doneness
+            }
+        }
+
         putInSharedPref()
         return addIdx
     }
@@ -70,7 +94,7 @@ class TodoItemsHolderImpl(val context : Context) : TodoItemsHolder {
         currentItems.addAll(holder)
     }
 
-    private fun putInSharedPref(){
+    private fun putInSharedPref() {
         val editor = sp.edit()
         val gson = Gson()
         editor.putString("holder", gson.toJson(currentItems))

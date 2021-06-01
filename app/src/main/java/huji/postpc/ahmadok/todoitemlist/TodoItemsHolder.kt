@@ -1,5 +1,7 @@
 package huji.postpc.ahmadok.todoitemlist
 
+import java.util.*
+
 // TODO: feel free to add/change/remove methods as you want
 interface TodoItemsHolder {
     /** Get a copy of the current items list  */
@@ -34,4 +36,6 @@ interface TodoItemsHolder {
 
     /** add all items in given TodoItemsHolder to current*/
     fun addAll(holder: List<TodoItem>)
+
+    fun editTodoItem(id: String, description: String, modifiedDate: Calendar)
 }
