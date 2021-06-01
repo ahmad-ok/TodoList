@@ -1,14 +1,17 @@
 package huji.postpc.ahmadok.todoitemlist
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.ListAdapter
+import java.util.*
 
 
-class TodoItemsAdapter() : ListAdapter<TodoItem, TodoItemViewHolder>(TodoDiffCallBack()) {
+class TodoItemsAdapter(private val context: Context) : ListAdapter<TodoItem, TodoItemViewHolder>(TodoDiffCallBack()) {
     val itemHolder = TodoItemApplication.getInstance()?.getDataBase()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoItemViewHolder {
         val context = parent.context
@@ -16,40 +19,49 @@ class TodoItemsAdapter() : ListAdapter<TodoItem, TodoItemViewHolder>(TodoDiffCal
         return TodoItemViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: TodoItemViewHolder, position: Int) {
+    override fun onBindViewHolder(viewHolder: TodoItemViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.todoItemText.text = item.description
-        holder.todoItemCheckBox.isChecked = item.isDone
+        viewHolder.todoItemText.text = item.description
+        viewHolder.todoItemCheckBox.isChecked = item.isDone
 
         if (item.isDone) {
-            holder.todoItemText.paintFlags =
-                (holder.todoItemText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
-            holder.todoItemText.setTextColor(Color.GRAY)
+            viewHolder.todoItemText.paintFlags =
+                (viewHolder.todoItemText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
+            viewHolder.todoItemText.setTextColor(Color.GRAY)
         } else {
 
-            holder.todoItemText.paintFlags =
-                (holder.todoItemText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv())
-            holder.todoItemText.setTextColor(Color.BLACK)
+            viewHolder.todoItemText.paintFlags =
+                (viewHolder.todoItemText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv())
+            viewHolder.todoItemText.setTextColor(Color.BLACK)
 
         }
-        holder.todoItemCheckBox.setOnCheckedChangeListener { _, isChecked ->
+        viewHolder.todoItemCheckBox.setOnCheckedChangeListener { _, isChecked ->
             val newIdx: Int
             if (isChecked) {
                 newIdx = itemHolder?.markItemDone(item)!!
-                holder.todoItemText.paintFlags =
-                    (holder.todoItemText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
-                holder.todoItemText.setTextColor(Color.GRAY)
-                notifyItemMoved(holder.adapterPosition, newIdx)
+                viewHolder.todoItemText.paintFlags =
+                    (viewHolder.todoItemText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
+                viewHolder.todoItemText.setTextColor(Color.GRAY)
+                notifyItemMoved(viewHolder.adapterPosition, newIdx)
             } else {
                 newIdx = itemHolder?.markItemInProgress(item)!!
 
-                holder.todoItemText.paintFlags =
-                    (holder.todoItemText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv())
-                holder.todoItemText.setTextColor(Color.BLACK)
+                viewHolder.todoItemText.paintFlags =
+                    (viewHolder.todoItemText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv())
+                viewHolder.todoItemText.setTextColor(Color.BLACK)
 
-                notifyItemMoved(holder.adapterPosition, newIdx)
+                notifyItemMoved(viewHolder.adapterPosition, newIdx)
             }
+        }
+
+        viewHolder.itemView.setOnClickListener {
+            val modifyIntent = Intent(context, EditActivity::class.java)
+            modifyIntent.putExtra("description",item.description)
+            modifyIntent.putExtra("creationDate",item.creationDate)
+            modifyIntent.putExtra("modifiedDate",item.modifiedDate)
+            modifyIntent.putExtra("status",item.isDone)
+            context.startActivity(modifyIntent)
         }
 
     }

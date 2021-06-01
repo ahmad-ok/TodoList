@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">TodoItemList</string>
     <string name="todo_row_text">Todo Text Here</string>
+    <string name="edit_todo_title">Todo Item Details:</string>
+    <string name="description_textview_text">Description:</string>
+    <string name="last_modified">Last Modified %1$s:</string>
+    <string name="date_created">Date Created: %1$s</string>
+    <string name="completed">Completed:</string>
 </resources>

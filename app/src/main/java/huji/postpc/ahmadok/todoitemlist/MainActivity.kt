@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val sp: SharedPreferences? = getSharedPreferences("local_db_items", MODE_PRIVATE)
-        val adapter = TodoItemsAdapter()
+        val adapter = TodoItemsAdapter(this)
         val todoItemRecycler: RecyclerView = findViewById(R.id.recyclerTodoItemsList)
         todoItemRecycler.adapter = adapter
         todoItemRecycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)

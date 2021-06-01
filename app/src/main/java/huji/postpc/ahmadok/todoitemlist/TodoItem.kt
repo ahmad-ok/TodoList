@@ -1,29 +1,14 @@
 package huji.postpc.ahmadok.todoitemlist
 
 import java.io.Serializable
+import java.util.*
 
 data class TodoItem(
     var id : String = "",
     var description: String = "",
     var isDone: Boolean = false,
-    var creationTime: Long = System.currentTimeMillis()
-) : Serializable
-/*
+    var creationTime: Long = System.currentTimeMillis(),
+    var creationDate: Calendar = Calendar.getInstance(),
+    var modifiedDate: Calendar = Calendar.getInstance()
 
-class TodoItem(var description: String, var isDone: Boolean = false, var creationTime: Int = 0) : Serializable {
-
-//    var isDone = false
-//    var creationTime = 0
-
-    companion object{
-        var time: Int = 0
-    }
-
-    init {
-        creationTime = time
-        time++
-
-    }
-
-
-}*/
+    ) : Serializable
